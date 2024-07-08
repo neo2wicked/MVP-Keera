@@ -10,23 +10,19 @@ function AskQuestion() {
     e.preventDefault();
     console.log('Submitting questions:', questions);
     try {
-      const response = await fetch('http://localhost:5001/api/questions', { // Correct URL
+      const response = await fetch('http://localhost:5001/api/questions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
         },
         body: JSON.stringify({ questions }),
       });
-      console.log('Response status:', response.status);
       if (!response.ok) {
-        console.error('Failed to save questions:', response.statusText);
-        return;
+        throw new Error('Failed to submit questions');
       }
       const data = await response.json();
-      console.log('Response data:', data);
-      setCode(data.code);
-      navigate('/some-path'); // Navigate to some path after submission
+      console.log('Questions submitted successfully:', data);
+      setCode(data.code); // Set the code to display it on the screen
     } catch (error) {
       console.error('Error during fetch:', error);
     }

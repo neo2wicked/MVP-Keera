@@ -25,6 +25,7 @@ function App() {
         </header>
         <main>
           <Routes>
+            <Route path="/" element={<AskQuestion />} />
             <Route path="/ask" element={<AskQuestion />} />
             <Route path="/enter-code" element={<EnterCode />} />
             <Route path="/submit/:code" element={<SubmitResponse />} />
@@ -38,4 +39,3 @@ function App() {
 }
 
 export default App;
-
