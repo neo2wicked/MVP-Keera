@@ -7,6 +7,8 @@ const SubmitResponse = () => {
   const [responses, setResponses] = useState([]);
   const [submissionStatus, setSubmissionStatus] = useState(null);
 
+  const STATIC_TOKEN = 'b4f7598791729ecb1a81b48b5c46eabc45dac376a0e27189f5345c1961f48840'; // Your generated token
+
   useEffect(() => {
     fetchQuestions(code);
   }, [code]);
@@ -16,16 +18,14 @@ const SubmitResponse = () => {
     try {
       const response = await fetch(`http://localhost:5001/api/questions/${code}`, {
         headers: {
-          'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
+          'X-Requested-With': 'XMLHttpRequest',
+          'Authorization': `Bearer ${STATIC_TOKEN}` // Use the static token
         },
       });
-      console.log('Response status:', response.status);
       if (!response.ok) {
-        console.error('Failed to fetch questions:', response.statusText);
-        return;
+        throw new Error('Failed to fetch questions');
       }
       const data = await response.json();
-      console.log('Response data:', data);
       setQuestions(data.questions);
       setResponses(new Array(data.questions.length).fill(''));
     } catch (error) {
@@ -41,22 +41,18 @@ const SubmitResponse = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest', // Add this header to avoid preflight requests
+          'X-Requested-With': 'XMLHttpRequest',
+          'Authorization': `Bearer ${STATIC_TOKEN}` // Use the static token
         },
         body: JSON.stringify({ code, responses }),
       });
-      console.log('Response status:', response.status);
       if (!response.ok) {
-        console.error('Failed to submit responses:', response.statusText);
-        setSubmissionStatus('Failed to submit responses'); // Update status on failure
-        return;
+        throw new Error('Failed to submit responses');
       }
-      const data = await response.json();
-      console.log('Response data:', data);
-      setSubmissionStatus('Responses submitted successfully!'); // Update status on success
+      setSubmissionStatus('Responses submitted successfully!');
     } catch (error) {
       console.error('Error during fetch:', error);
-      setSubmissionStatus('Error during submission'); // Update status on error
+      setSubmissionStatus('Error during submission');
     }
   };
 
